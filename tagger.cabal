@@ -4,7 +4,7 @@ Description: A simple rule-based tagger
 License: MIT
 License-file: LICENSE
 Extra-source-files: README.md
-Data-files: ../data/lexicon.txt
+Data-files: lexicon.txt
 Author: Sean Voisen
 Maintainer: sean@voisen.org
 Build-Type: Simple

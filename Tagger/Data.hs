@@ -66,4 +66,4 @@ data Tag =
 data Pair = Pair String Tag
 
 instance Show Pair where
-  show (Pair word tag) = show word ++ "/" ++ show tag
+  show (Pair word tag) = word ++ "/" ++ show tag
