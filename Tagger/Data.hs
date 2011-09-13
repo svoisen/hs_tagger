@@ -14,14 +14,12 @@ buildLexicon :: String -> Lexicon
 buildLexicon = M.fromList . makeTuples . lines
 
 makeTuples :: [String] -> [(String, [Tag])]
-makeTuples []         = []
-makeTuples (line:rest) = 
-  let lineWords = words line
-  in (head lineWords, makeTags $ tail lineWords) : makeTuples rest
+makeTuples = Prelude.map makeTuple
 
-makeTags :: [String] -> [Tag]
-makeTags []   = []
-makeTags tags = Prelude.map read tags
+makeTuple :: String -> (String, [Tag])
+makeTuple line = 
+  (word, Prelude.map read tags :: [Tag])
+  where (word:tags) = words line
 
 -- Tag
 data Tag = 
