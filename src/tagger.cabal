@@ -1,0 +1,14 @@
+Name: tagger
+Version: 0.1
+Description: A simple rule-based tagger
+License: MIT
+License-file: LICENSE
+Extra-source-files: README.md
+Data-files: ../data/lexicon.txt
+Author: Sean Voisen
+Maintainer: sean@voisen.org
+Build-Type: Simple
+Cabal-Version: >= 1.8
+Executable tagger
+  Main-is: Tagger.hs
+  Build-Depends: base <4.5, split >=0.1.4.1, containers >=0.3
