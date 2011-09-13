@@ -1,6 +1,6 @@
 module Tagger.Data 
-( Tag
-, Pair
+( Tag(..)
+, Pair(Pair)
 , Lexicon
 , buildLexicon
 ) where
@@ -17,7 +17,11 @@ makeTuples :: [String] -> [(String, [Tag])]
 makeTuples []         = []
 makeTuples (line:rest) = 
   let lineWords = words line
-  in (head lineWords, Prelude.map read $ tail lineWords) : makeTuples rest
+  in (head lineWords, makeTags $ tail lineWords) : makeTuples rest
+
+makeTags :: [String] -> [Tag]
+makeTags []   = []
+makeTags tags = Prelude.map read tags
 
 -- Tag
 data Tag = 
@@ -59,7 +63,7 @@ data Tag =
   WRB  deriving (Show, Read, Eq)
 
 -- Pair
-data Pair = Pair String Tag 
+data Pair = Pair String Tag
 
 instance Show Pair where
   show (Pair word tag) = show word ++ "/" ++ show tag

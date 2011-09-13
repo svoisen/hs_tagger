@@ -1,10 +1,11 @@
 import System.Environment
 import Tagger.Tokenize
+import Tagger.Tag
 import Tagger.Data
-import Data.Map as M
 
 main = do
-  (sentence:_) <- getArgs
+  (input:_) <- getArgs
   f <- readFile "data/lexicon.txt"
-  let lexicon = buildLexicon f
-  putStrLn $ show $ lexicon ! "dog"
+  let lexicon   = buildLexicon f
+      tokenized = tokenize input 
+  putStrLn $ unwords $ map show $ assignTags tokenized lexicon

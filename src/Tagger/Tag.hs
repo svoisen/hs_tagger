@@ -4,9 +4,14 @@ module Tagger.Tag
 ) where
 
 import Data.Maybe
+import Data.Map as M
+import Tagger.Data
 
-assignTags :: [String] -> Map String String -> [(String, String)]
-assignTags words lexiconMap = Prelude.map (\word -> assignTag word lexiconMap) words
+assignTags :: [String] -> Lexicon -> [Pair]
+assignTags words lexicon = 
+  Prelude.map (\word -> assignTag word lexicon) words
 
-assignTag :: String -> Map String String -> (String, String)
-assignTag word lexiconMap = (word, fromJust result) where result = M.lookup word lexiconMap
+assignTag :: String -> Lexicon -> Pair
+assignTag word lexicon = 
+  Pair word (head $ fromJust result :: Tag)
+  where result = M.lookup word lexicon :: Maybe [Tag]
