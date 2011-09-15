@@ -61,7 +61,16 @@ data Tag =
   WDT  |
   WP   |
   WPS  |
-  WRB  deriving (Show, Read, Eq)
+  WRB  deriving (Eq)
+
+instance Read Tag where
+  readsPrec d input =
+    (\inp -> [((NNPS), rest) | ("NNP$", rest) <- lex inp]) input
+
+instance Show Tag where
+  showsPrec _ NNPS = showString "NNP$"
+  showsPrec _ PRPS = showString "PRP$"
+  showsPrec _ tag  = shows tag
 
 isNoun :: Tag -> Bool
 isNoun t 
@@ -76,11 +85,6 @@ data Pair = Pair String Tag
 
 instance Show Pair where
   show (Pair word tag) = word ++ "/" ++ show tag
-
---instance Read Pair where
---  read str
---    | "PRP$" = PRPS
---    | otherwise = 
 
 word :: Pair -> String
 word (Pair word _) = word
