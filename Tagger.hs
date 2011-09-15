@@ -11,4 +11,4 @@ main = do
   f             <- readFile $ dataFileName
   let lexicon   = buildLexicon f
       tokenized = tokenize input 
-  putStrLn $ unwords $ map show $ assignTags tokenized lexicon
+  putStrLn $ unwords $ map show $ applyRules $ assignTags tokenized lexicon

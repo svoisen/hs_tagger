@@ -3,22 +3,25 @@ module Tagger.Data
 , Pair(Pair)
 , Lexicon
 , buildLexicon
+, word
+, tag
+, isNoun
 ) where
 
-import Data.Map as M
+import qualified Data.Map as M
 
 -- Lexicon
-type Lexicon = Map String [Tag]
+type Lexicon = M.Map String [Tag]
 
 buildLexicon :: String -> Lexicon
 buildLexicon = M.fromList . makeTuples . lines
 
 makeTuples :: [String] -> [(String, [Tag])]
-makeTuples = Prelude.map makeTuple
+makeTuples = map makeTuple
 
 makeTuple :: String -> (String, [Tag])
 makeTuple line = 
-  (word, Prelude.map read tags :: [Tag])
+  (word, map read tags :: [Tag])
   where (word:tags) = words line
 
 -- Tag
@@ -60,8 +63,27 @@ data Tag =
   WPS  |
   WRB  deriving (Show, Read, Eq)
 
+isNoun :: Tag -> Bool
+isNoun t 
+  | t == NN = True
+  | t == NNS = True
+  | t == NNP = True
+  | t == NNPS = True
+  | otherwise = False
+
 -- Pair
 data Pair = Pair String Tag
 
 instance Show Pair where
   show (Pair word tag) = word ++ "/" ++ show tag
+
+--instance Read Pair where
+--  read str
+--    | "PRP$" = PRPS
+--    | otherwise = 
+
+word :: Pair -> String
+word (Pair word _) = word
+
+tag :: Pair -> Tag
+tag (Pair _ tag) = tag

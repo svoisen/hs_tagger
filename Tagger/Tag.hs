@@ -1,17 +1,47 @@
 module Tagger.Tag 
 ( assignTags
-, assignTag
+, applyRules
 ) where
 
 import Data.Maybe
-import Data.Map as M
+import qualified Data.Map as M
 import Tagger.Data
+import Text.Regex.PCRE
 
 assignTags :: [String] -> Lexicon -> [Pair]
 assignTags words lexicon = 
-  Prelude.map (\word -> assignTag word lexicon) words
+  map (\word -> assignTag word lexicon) words
+
+applyRules :: [Pair] -> [Pair]
+applyRules = unTrigramize . map rule1 . trigramize
 
 assignTag :: String -> Lexicon -> Pair
 assignTag word lexicon = 
   Pair word (head $ fromJust result :: Tag)
   where result = M.lookup word lexicon :: Maybe [Tag]
+
+trigramize :: [Pair] -> [[Pair]]
+trigramize []    = []
+trigramize pairs = filter (\xs -> length xs == 3) $ take 3 pairs : trigramize (tail pairs)
+
+unTrigramize :: [[Pair]] -> [Pair]
+unTrigramize trigrams = 
+  (firstPair : map (!! 1) trigrams) ++ [lastPair]
+  where firstPair = head $ head trigrams
+        lastPair = last $ last trigrams
+
+rule1 :: [Pair] -> [Pair]
+rule1 (prev:cur:next:_) = 
+  if prevTag == DT && (curTag == VB || curTag == VBP || curTag == VBD)
+    then [prev, Pair (word cur) NN, next]
+    else [prev, cur, next]
+  where prevTag = tag prev
+        curTag  = tag cur
+
+rule3 :: [Pair] -> [Pair]
+rule3 (prev:cur:next:_) =
+  if isNoun curTag && curWord =~ "ed$"
+    then [prev, Pair curWord VBN, next]
+    else [prev, cur, next]
+  where curTag  = tag cur
+        curWord = word cur
