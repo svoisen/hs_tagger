@@ -13,7 +13,10 @@ assignTags words lexicon =
   map (\word -> assignTag word lexicon) words
 
 applyRules :: [Pair] -> [Pair]
-applyRules = unTrigramize . map rule1 . trigramize
+applyRules = unTrigramize . map allRules . trigramize
+
+allRules :: [Pair] -> [Pair]
+allRules = rule1 . rule3
 
 assignTag :: String -> Lexicon -> Pair
 assignTag word lexicon = 
@@ -33,15 +36,16 @@ unTrigramize trigrams =
 rule1 :: [Pair] -> [Pair]
 rule1 (prev:cur:next:_) = 
   if prevTag == DT && (curTag == VB || curTag == VBP || curTag == VBD)
-    then [prev, Pair (word cur) NN, next]
+    then [prev, Pair curWord NN, next]
     else [prev, cur, next]
-  where prevTag = tag prev
-        curTag  = tag cur
+  where prevTag = getTag prev
+        curTag  = getTag cur
+        curWord = getWord cur
 
 rule3 :: [Pair] -> [Pair]
 rule3 (prev:cur:next:_) =
   if isNoun curTag && curWord =~ "ed$"
     then [prev, Pair curWord VBN, next]
     else [prev, cur, next]
-  where curTag  = tag cur
-        curWord = word cur
+  where curTag  = getTag cur
+        curWord = getWord cur

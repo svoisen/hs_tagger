@@ -3,8 +3,8 @@ module Tagger.Data
 , Pair(Pair)
 , Lexicon
 , buildLexicon
-, word
-, tag
+, getWord
+, getTag
 , isNoun
 ) where
 
@@ -21,7 +21,7 @@ makeTuples = map makeTuple
 
 makeTuple :: String -> (String, [Tag])
 makeTuple line = 
-  (word, map read tags :: [Tag])
+  (word, map readTag tags :: [Tag])
   where (word:tags) = words line
 
 -- Tag
@@ -61,16 +61,19 @@ data Tag =
   WDT  |
   WP   |
   WPS  |
-  WRB  deriving (Eq)
+  WRB  deriving (Eq, Read, Show)
 
-instance Read Tag where
-  readsPrec d input =
-    (\inp -> [((NNPS), rest) | ("NNP$", rest) <- lex inp]) input
+showTag :: Tag -> String
+showTag t
+  | t == NNPS = "NNP$"
+  | t == PRPS = "PRP$"
+  | otherwise = show t
 
-instance Show Tag where
-  showsPrec _ NNPS = showString "NNP$"
-  showsPrec _ PRPS = showString "PRP$"
-  showsPrec _ tag  = shows tag
+readTag :: String -> Tag
+readTag s
+  | s == "NNP$" = NNPS
+  | s == "PRP$" = PRPS
+  | otherwise = read s :: Tag
 
 isNoun :: Tag -> Bool
 isNoun t 
@@ -84,10 +87,10 @@ isNoun t
 data Pair = Pair String Tag
 
 instance Show Pair where
-  show (Pair word tag) = word ++ "/" ++ show tag
+  show (Pair word tag) = word ++ "/" ++ showTag tag
 
-word :: Pair -> String
-word (Pair word _) = word
+getWord :: Pair -> String
+getWord (Pair word _) = word
 
-tag :: Pair -> Tag
-tag (Pair _ tag) = tag
+getTag :: Pair -> Tag
+getTag (Pair _ tag) = tag
