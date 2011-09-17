@@ -1,6 +1,7 @@
 module Tagger.Tag 
 ( assignTags
 , applyRules
+, trigramize
 ) where
 
 import Data.Maybe
@@ -24,10 +25,15 @@ assignTag word lexicon =
   where result = M.lookup word lexicon :: Maybe [Tag]
 
 trigramize :: [Pair] -> [[Pair]]
-trigramize []    = []
-trigramize pairs = filter (\xs -> length xs == 3) $ take 3 pairs : trigramize (tail pairs)
+trigramize []       = []
+trigramize [p]      = (take 3 $ repeat p) : []
+trigramize [p1, p2] = [p1, p2, p2] : [take 3 $ repeat p2]
+trigramize pairs    = filter (\xs -> length xs == 3) $ take 3 pairs : trigramize (tail pairs)
 
 unTrigramize :: [[Pair]] -> [Pair]
+unTrigramize []       = []
+unTrigramize [t]      = head t : []
+unTrigramize [t1, t2] = head t1 : [head t2] 
 unTrigramize trigrams = 
   (firstPair : map (!! 1) trigrams) ++ [lastPair]
   where firstPair = head $ head trigrams
