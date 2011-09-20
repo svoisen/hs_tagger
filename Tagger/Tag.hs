@@ -35,9 +35,8 @@ unTrigramize []       = []
 unTrigramize [t]      = head t : []
 unTrigramize [t1, t2] = head t1 : [head t2] 
 unTrigramize trigrams = 
-  (firstPair : map (!! 1) trigrams) ++ [lastPair]
+  firstPair : map (!! 1) (init trigrams)
   where firstPair = head $ head trigrams
-        lastPair = last $ last trigrams
 
 rule1 :: [Pair] -> [Pair]
 rule1 (prev:cur:next:_) = 

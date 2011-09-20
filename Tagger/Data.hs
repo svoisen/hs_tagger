@@ -9,20 +9,21 @@ module Tagger.Data
 ) where
 
 import qualified Data.Map as M
+import qualified Data.ByteString.Char8 as B
 
 -- Lexicon
 type Lexicon = M.Map String [Tag]
 
-buildLexicon :: String -> Lexicon
-buildLexicon = M.fromList . makeTuples . lines
+buildLexicon :: B.ByteString -> Lexicon
+buildLexicon = M.fromList . makeTuples . B.lines
 
-makeTuples :: [String] -> [(String, [Tag])]
+makeTuples :: [B.ByteString] -> [(String, [Tag])]
 makeTuples = map makeTuple
 
-makeTuple :: String -> (String, [Tag])
+makeTuple :: B.ByteString -> (String, [Tag])
 makeTuple line = 
   (word, map readTag tags :: [Tag])
-  where (word:tags) = words line
+  where (word:tags) = words $ B.unpack line
 
 -- Tag
 data Tag = 
