@@ -8,6 +8,7 @@ import Data.Maybe
 import qualified Data.Map as M
 import Tagger.Data
 import Text.Regex.PCRE
+import Distribution.Simple.Utils
 
 assignTags :: [String] -> Lexicon -> [Pair]
 assignTags words lexicon = 
@@ -75,3 +76,4 @@ rule6 (prev:cur:next:_) =
     else [prev, cur, next]
   where curTag   = getTag cur
         prevWord = getWord prev
+        curWord  = getWord cur
