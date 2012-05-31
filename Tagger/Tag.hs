@@ -16,7 +16,7 @@ assignTags words lexicon =
 
 applyRules :: [Pair] -> [Pair]
 applyRules = unTrigramize . map allRules . trigramize
-  where allRules = rule6 . rule5 . rule4 . rule3 . rule1
+  where allRules = rule7 . rule6 . rule5 . rule4 . rule3 . rule1
 
 assignTag :: String -> Lexicon -> Pair
 assignTag word lexicon = 
@@ -77,3 +77,11 @@ rule6 (prev:cur:next:_) =
   where curTag   = getTag cur
         prevWord = getWord prev
         curWord  = getWord cur
+
+rule7 :: [Pair] -> [Pair]
+rule7 (prev:cur:next:_) =
+  if curTag == NN && curWord =~ "s$"
+    then [prev, Pair curWord NNS, next]
+    else [prev, cur, next]
+  where curTag  = getTag cur
+        curWord = getWord cur
