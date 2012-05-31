@@ -12,6 +12,12 @@ This program can be easily compiled and installed using Cabal, the Haskell packa
 
 (Or use an installation prefix of your preference.)
 
+Compilation requires the PCRE library and headers to be installed on your system. For Mac OS X, the easiest way to install PCRE is via Homebrew.
+
+    brew install pcre
+
+Linux-based systems should be able to install PCRE via the preferred package manager (yum, apt-get, etc.)
+
 Use
 ---
 
